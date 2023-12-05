@@ -3,7 +3,21 @@ name = "rust-learn-api"
 version = "0.1.0"
 edition = "2021"
 
-# On MacOS, `brew install llvm` and follow steps in `brew info llvm`
+[lib]
+# We could use any path here, but we are following the community convention
+# We could specify a library name using the `name` field. If unspecified,
+# cargo will default to `package.name`, which is what we want.
+path = "src/lib.rs"
+
+# Notice the double square brackets: it's an array in TOML's syntax.
+# We can only have one library in a project, but we can have multiple binaries!
+# If you want to manage multiple libraries in the same repository
+# have a look at the workspace feature - we'll cover it later on.
+[[bin]]
+path = "src/main.rs"
+name = "rust-learn-api"
+
+# On macOS, `brew install llvm` and follow steps in `brew info llvm`
 [target.x86_64-apple-darwin]
 rustflags = ["-C", "link-arg=-fuse-ld=lld"]
 
@@ -13,3 +27,33 @@ rustflags = ["-C", "link-arg=-fuse-ld=/opt/homebrew/opt/llvm/bin/ld64.lld"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+tracing-actix-web = "0.7"
+secrecy = { version = "0.8", features = ["serde"] }
+tracing-log = "0.1"
+tracing-bunyan-formatter = "0.3"
+tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
+tracing = { version = "0.1", features = ["log"] }
+actix-web = "4"
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros"] }
+reqwest = "0.11.22"
+serde = { version = "1", features = ["derive"] }
+config = { version = "0.13", features = [] }
+uuid = { version = "1", features = ["v4"] }
+chrono = { version = "0.4.22", default-features = false, features = ["clock"] }
+once_cell = "1.18.0"
+
+[dependencies.sqlx]
+once_cell = "1"
+version = "0.7"
+default-features = false
+features = [
+"runtime-tokio-rustls",
+"macros",
+"postgres",
+"uuid",
+"chrono",
+"migrate"
+]
+
+[dev-dependencies]
+reqwest = "0.11"
